@@ -75,7 +75,8 @@ namespace CustomersApi
 
         [FunctionName(nameof(CreateCustomer))]
         public IActionResult CreateCustomer(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customers")] CreateCustomerDto createCustomerDto
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customers")] CreateCustomerDto createCustomerDto,
+            HttpRequest req // just to show that HttpRequest is still available even if we bind to Http post
             )
         {
             IActionResult DoCreateCustomer()
@@ -103,7 +104,7 @@ namespace CustomersApi
 
                 Logger.LogInformation("Customer {customer} created", createdCustomer.Id);
 
-                return Created($"customers/{createdCustomer.Id}", createdCustomer);
+                return Created($"api/customers/{createdCustomer.Id}", createdCustomer);
             }
 
             return Run(DoCreateCustomer);
