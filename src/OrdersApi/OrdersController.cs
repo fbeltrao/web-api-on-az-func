@@ -27,10 +27,10 @@ namespace OrdersApi
         {
             async Task<IActionResult> DoCreateOrder()
             {
-                var validationResults = new List<ValidationResult>();
-                if (!Validator.TryValidateObject(request, new ValidationContext(request), validationResults, validateAllProperties: true))
+                var validationResult = Validate(request);
+                if (!validationResult.IsValid)
                 {
-                    return ValidationFailed(validationResults);
+                    return ValidationFailed(validationResult);
                 }
 
                 var customer = await _customerService.GetCustomerAsync(request.CustomerId, cancellationToken);

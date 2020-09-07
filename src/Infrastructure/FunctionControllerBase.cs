@@ -71,6 +71,27 @@ namespace Infrastructure
         }
 
         /// <summary>
+        /// Returns a <see cref="ApiErrorResponse"/> containing the validation error messages.
+        /// Status code is <see cref="HttpStatusCode.BadRequest"/>.
+        /// </summary>
+        protected IActionResult ValidationFailed(ApiValidationResult validationResult) => ValidationFailed(validationResult.ValidationResults);
+
+
+        /// <summary>
+        /// Validates an object using <see cref="Validator"/>.
+        /// </summary>
+        protected ApiValidationResult Validate(object target)
+        {
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(target, new ValidationContext(target), validationResults, validateAllProperties: true))
+            {
+                return new ApiValidationResult(validationResults);
+            }
+
+            return ApiValidationResult.Valid;
+        }
+
+        /// <summary>
         /// Indicates that the request has failed, returning status code 500.
         /// The response body will be of type <see cref="ApiErrorResponse"/>.
         /// </summary>

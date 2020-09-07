@@ -101,6 +101,10 @@ Using the correlation-id to search logs in Application Insights:
 End to end tracing in Application insights:
 ![search-in-app-insights](./media/ai-e2e-delete-failure.jpg)
 
+The fact that we are logging validation results can also be handy in scenarios where an API user reports problems using it, providing a correlation-id. With this information we can locate the actual validation error:
+
+![validation-failed](./media/ai-search-validation-failed.jpg)
+
 ## Application Insights enrichment
 
 Application Insights instrumentation can be argumented to include additional information. In this repo we are adding the cloud role and the application version by registering a ITelemetryIntializer. That happens in src/CustomersApi/Startup.cs.

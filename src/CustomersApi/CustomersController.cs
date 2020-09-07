@@ -8,6 +8,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Net;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace CustomersApi
 {
@@ -81,10 +82,10 @@ namespace CustomersApi
         {
             IActionResult DoCreateCustomer()
             {
-                var validationResults = new List<ValidationResult>();
-                if (!Validator.TryValidateObject(createCustomerDto, new ValidationContext(createCustomerDto), validationResults, validateAllProperties: true))
-                {
-                    return ValidationFailed(validationResults);
+                var validationResult = Validate(createCustomerDto);
+                if (!validationResult.IsValid)
+                { 
+                    return ValidationFailed(validationResult);
                 }
 
                 Logger.LogInformation("Creating new customer");
@@ -109,6 +110,8 @@ namespace CustomersApi
 
             return Run(DoCreateCustomer);
         }
+
+        
 
         [FunctionName(nameof(UpdateCustomer))]
         public IActionResult UpdateCustomer(
