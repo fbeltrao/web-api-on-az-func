@@ -1,0 +1,197 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace Infrastructure
+{
+    public class FunctionControllerBase
+    {
+        const string DefaultNotFoundErrorMessage = "Not found";
+
+        protected ILogger Logger { get; private set; }
+
+        public FunctionControllerBase(ILogger logger)
+        {
+            Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        protected BadRequestObjectResult BadRequest(string errorMessage)
+        {
+            var body = new ApiErrorResponse
+            {
+                Error = errorMessage,
+            };
+
+            var res = new BadRequestObjectResult(body);
+            return res;
+        }
+
+        protected NotFoundObjectResult NotFound(string errorMessage = null)
+        {
+            var response = new ApiErrorResponse
+            {
+                ErrorCode = ErrorCodes.NotFound,
+                Error = errorMessage ?? DefaultNotFoundErrorMessage,
+            };
+
+            return new NotFoundObjectResult(response);
+        }
+
+        protected OkObjectResult OK(object value) => new OkObjectResult(value);
+        protected CreatedResult Created(string location, object value) => new CreatedResult(location, value);
+
+        /// <summary>
+        /// Returns a <see cref="ApiErrorResponse"/> containing the validation error message.
+        /// Status code is <see cref="HttpStatusCode.BadRequest"/>.
+        /// </summary>
+        protected IActionResult ValidationFailed(string errorMessage) => ValidationFailed(new[] { new ValidationResult(errorMessage) });
+
+        /// <summary>
+        /// Returns a <see cref="ApiErrorResponse"/> containing the validation error messages.
+        /// Status code is <see cref="HttpStatusCode.BadRequest"/>.
+        /// </summary>
+        protected IActionResult ValidationFailed(IList<ValidationResult> validationResult)
+        {
+            var errorMessages = validationResult.Select(x => x.ErrorMessage).ToList();
+            var body = new ApiErrorResponse
+            {
+                ErrorCode = ErrorCodes.InvalidRequest,
+                Error = errorMessages.Count == 1 ? errorMessages[0] : null,
+                Errors = errorMessages.Count > 1 ? errorMessages : null
+            };
+
+            Logger.LogInformation("Validation failed: {message}", errorMessages);
+
+            return new BadRequestObjectResult(body);
+        }
+
+        /// <summary>
+        /// Indicates that the request has failed, returning status code 500.
+        /// The response body will be of type <see cref="ApiErrorResponse"/>.
+        /// </summary>
+        protected IActionResult Failed(string message, Exception ex)
+        {
+            Logger.LogError(ex, message);
+
+            var errorResponse = new ApiErrorResponse
+            {
+                ErrorCode = ErrorCodes.InternalServerError,
+                Error = message,
+            };
+
+            var result = new ObjectResult(errorResponse)
+            {
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+            };
+            return result;
+        }
+
+        /// <summary>
+        /// Indicates that application failed with an specific <see cref="HttpStatusCode"/>.
+        /// The response body will be of type <see cref="ApiErrorResponse"/>.
+        /// </summary>
+        protected IActionResult Failed(HttpStatusCode statusCode, string errorMessage, string errorCode)
+        {
+            Logger.LogWarning(errorMessage);
+
+            var errorResponse = new ApiErrorResponse
+            {
+                ErrorCode = errorCode,
+                Error = errorMessage,
+            };
+
+            var result = new ObjectResult(errorResponse)
+            {
+                StatusCode = (int)statusCode,
+            };
+            return result;
+        }
+
+        /// <summary>
+        /// Tries to handle the error.
+        /// </summary>
+        /// <returns>
+        /// Returns true if a an response should be returned (where body is of type <see cref="ApiErrorResponse"/>.
+        /// Returns false if the exception should be bubbled up.
+        /// </returns>
+        protected virtual bool TryHandleError(Exception ex, out IActionResult response)
+        {
+            // Let fatal exception go through
+            if (IsFatal(ex))
+            {
+                response = null;
+                return false;
+            }
+
+            response = Failed("Failed processing request", ex);
+            return true;
+        }
+
+        private bool IsFatal(Exception ex)
+        {
+            if (ex is StackOverflowException ||
+                ex is OutOfMemoryException)
+            {
+                return true;
+            }
+
+            if (ex is AggregateException aggregateException)
+            {
+                foreach (var childException in aggregateException.InnerExceptions)
+                {
+                    if (IsFatal(childException))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (ex.InnerException != null)
+                {
+                    return IsFatal(ex.InnerException);
+                }
+            }
+
+
+            return false;
+        }
+
+        protected IActionResult Run(Func<IActionResult> fn)
+        {
+            try
+            {
+                return fn();
+            }
+            catch (Exception ex)
+            {
+                if (TryHandleError(ex, out var errorResponse))
+                    return errorResponse;
+
+                throw;
+            }
+        }
+
+        protected async Task<IActionResult> RunAsync(Func<Task<IActionResult>> fn)
+        {
+            try
+            {
+                return await fn();
+            }
+            catch (Exception ex)
+            {
+                if (TryHandleError(ex, out var errorResponse))
+                    return errorResponse;
+
+                throw;
+            }
+        }
+    }
+
+
+}
