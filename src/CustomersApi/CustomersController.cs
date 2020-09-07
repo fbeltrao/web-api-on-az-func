@@ -118,7 +118,6 @@ namespace CustomersApi
         {
             // This will not return the common error response
             // Needs to be wrapped in a try..catch or Run(() => {})
-            using var scope = Logger.BeginScope("Customer {customer}", id);
             throw new Exception("Update customer failed");
         }
     }
