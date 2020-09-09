@@ -1,9 +1,10 @@
 ﻿namespace OrdersApi
 {
-    using Newtonsoft.Json;
+    using System;
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
 
     internal class CustomerService : ICustomerService
     {
@@ -16,11 +17,11 @@
 
         public async Task<CustomerDto> GetCustomerAsync(int id, CancellationToken cancellationToken)
         {
-            var response = await _httpClient.GetAsync($"/api/customers/{id}", cancellationToken);
+            var response = await _httpClient.GetAsync(new Uri($"/api/customers/{id}"), cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             var content = response.Content;
-            var jsonResponse = await content.ReadAsStringAsync();
+            var jsonResponse = await content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<CustomerDto>(jsonResponse);
         }
     }

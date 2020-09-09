@@ -1,19 +1,20 @@
 namespace OrdersApi
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
+    using Infrastructure;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.Http;
     using Microsoft.Extensions.Logging;
-    using Infrastructure;
-    using System.Threading;
 
     public class OrdersController : FunctionControllerBase
     {
         private readonly ICustomerService _customerService;
 
-        public OrdersController(ILogger<OrdersController> logger, ICustomerService customerService) : base(logger)
+        public OrdersController(ILogger<OrdersController> logger, ICustomerService customerService)
+            : base(logger)
         {
             _customerService = customerService;
         }
@@ -31,7 +32,7 @@ namespace OrdersApi
                     return ValidationFailed(validationResult);
                 }
 
-                var customer = await _customerService.GetCustomerAsync(request.CustomerId, cancellationToken);
+                var customer = await _customerService.GetCustomerAsync(request.CustomerId, cancellationToken).ConfigureAwait(false);
 
                 var createdOrder = new OrderDto
                 {
@@ -43,7 +44,7 @@ namespace OrdersApi
                 return Created($"api/orders/{createdOrder.Id}", createdOrder);
             }
 
-            return await RunAsync(DoCreateOrder);
+            return await RunAsync(DoCreateOrder).ConfigureAwait(false);
         }
     }
 }

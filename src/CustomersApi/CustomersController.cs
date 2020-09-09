@@ -1,19 +1,21 @@
 namespace CustomersApi
 {
+    using System;
+    using System.Net;
+    using Infrastructure;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.Http;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
-    using Infrastructure;
-    using System;
-    using System.Net;
 
 #pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1801 // Review unused parameters
 
     public class CustomersController : FunctionControllerBase
     {
-        public CustomersController(ILogger<CustomersController> logger) : base(logger)
+        public CustomersController(ILogger<CustomersController> logger)
+            : base(logger)
         {
         }
 
@@ -46,7 +48,6 @@ namespace CustomersApi
             return Run(DoGetCustomer);
         }
 
-
         [FunctionName(nameof(DeleteCustomer))]
         public IActionResult DeleteCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "customers/{id}")] HttpRequest req,
@@ -73,19 +74,17 @@ namespace CustomersApi
 
             return Run(DoDeleteCustomer);
         }
-        
 
         [FunctionName(nameof(CreateCustomer))]
         public IActionResult CreateCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "customers")] CreateCustomerDto createCustomerDto,
-            HttpRequest req // just to show that HttpRequest is still available even if we bind to Http post
-            )
+            HttpRequest req) // just to show that HttpRequest is still available even if we bind to Http post
         {
             IActionResult DoCreateCustomer()
             {
                 var validationResult = Validate(createCustomerDto);
                 if (!validationResult.IsValid)
-                { 
+                {
                     return ValidationFailed(validationResult);
                 }
 
@@ -111,13 +110,11 @@ namespace CustomersApi
 
             return Run(DoCreateCustomer);
         }
-        
 
         [FunctionName(nameof(UpdateCustomer))]
         public IActionResult UpdateCustomer(
             [HttpTrigger(AuthorizationLevel.Function, "put", Route = "customers/{id}")] CreateCustomerDto createCustomerDto,
-            int id
-            )
+            int id)
         {
             // This will not return the common error response
             // Needs to be wrapped in a try..catch or Run(() => {})
@@ -128,4 +125,5 @@ namespace CustomersApi
     }
 
 #pragma warning restore IDE0060 // Remove unused parameter
+#pragma warning restore CA1801 // Review unused parameters
 }
