@@ -118,11 +118,26 @@ With this information the Application Map of Application Insights is more readab
 ## Running the demo project
 
 Easiest way to get started is to run both APIs from Visual Studio:
+
+1. Set application insights in both Azure Functions (see example local.settings.json)
 1. Right click on the solution then Properties
 1. Common Properties / Startup Project
 1. Select Multiple startup projects
    1. Select CustomersApi with Start action
    1. Select OrdersApi with Start action
+
+### Local.settings.json example
+
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "APPINSIGHTS_INSTRUMENTATIONKEY": "<application-insights-key>"
+  }
+}
+```
 
 ## What's next?
 
