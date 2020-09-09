@@ -10,9 +10,9 @@ namespace CustomersApi
     {
         public void Configure(IWebJobsBuilder builder)
         {
-            builder.Services
-                .AddApiResponseHeaders<Startup>()
-                .AddApiTelemetryMetadata();
+            builder. Services
+                .AddApiResponseHeaders<Startup> ()
+                .AddApiTelemetryMetadata ();
         }
     }
 }
