@@ -1,9 +1,9 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Hosting;
+﻿using System;
 using Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 [assembly: WebJobsStartup(typeof(OrdersApi.Startup))]
 

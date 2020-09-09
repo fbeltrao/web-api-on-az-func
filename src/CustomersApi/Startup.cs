@@ -1,6 +1,6 @@
-﻿using Microsoft.Azure.WebJobs;
+﻿using Infrastructure;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
-using Infrastructure;
 
 [assembly: WebJobsStartup(typeof(CustomersApi.Startup))]
 
