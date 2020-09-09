@@ -107,7 +107,7 @@ The fact that we are logging validation results can also be handy in scenarios w
 
 ## Application Insights enrichment
 
-Application Insights instrumentation can be argumented to include additional information. In this repo we are adding the cloud role and the application version by registering a ITelemetryIntializer. That happens in src/CustomersApi/Startup.cs.
+Application Insights instrumentation can be argumented to include additional information. In this repo we are adding the cloud role and the application version by registering a ITelemetryIntializer. That happens in src/CustomersApi/Startup.cs (`builder.Services.AddApiTelemetryMetadata()`).
 
 Argumented instrumentation:
 ![enriched-app-insights](./media/ai-enriched-metadata.jpg)
