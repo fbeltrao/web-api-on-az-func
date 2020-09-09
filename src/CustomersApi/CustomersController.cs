@@ -1,17 +1,16 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Infrastructure;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Net;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-
 namespace CustomersApi
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Infrastructure;
+    using System;
+    using System.Net;
+
+#pragma warning disable IDE0060 // Remove unused parameter
+
     public class CustomersController : FunctionControllerBase
     {
         public CustomersController(ILogger<CustomersController> logger) : base(logger)
@@ -64,7 +63,9 @@ namespace CustomersApi
 
                 if (id == 10)
                 {
+#pragma warning disable S112 // General exceptions should never be thrown
                     throw new ApplicationException("Database failure deleting customer");
+#pragma warning restore S112 // General exceptions should never be thrown
                 }
 
                 return new OkResult();
@@ -110,7 +111,6 @@ namespace CustomersApi
 
             return Run(DoCreateCustomer);
         }
-
         
 
         [FunctionName(nameof(UpdateCustomer))]
@@ -121,7 +121,11 @@ namespace CustomersApi
         {
             // This will not return the common error response
             // Needs to be wrapped in a try..catch or Run(() => {})
+#pragma warning disable S112 // General exceptions should never be thrown
             throw new Exception("Update customer failed");
+#pragma warning restore S112 // General exceptions should never be thrown
         }
     }
+
+#pragma warning restore IDE0060 // Remove unused parameter
 }

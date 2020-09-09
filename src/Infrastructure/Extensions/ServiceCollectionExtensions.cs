@@ -1,19 +1,18 @@
-﻿using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Infrastructure
+﻿namespace Infrastructure
 {
+    using Microsoft.ApplicationInsights.Extensibility;
+    using Microsoft.Azure.WebJobs.Host;
+    using Microsoft.Extensions.DependencyInjection;
+
     public static class ServiceCollectionExtensions
     {
         /// <summary>
         /// Adds api headers to function response:
         /// - correlation id
         /// - function version
-        /// - function assembly name
+        /// - function assembly name.
         /// </summary>
-        /// <typeparam name="TStartup"></typeparam>
-        /// <param name="builder"></param>
+        /// <typeparam name="TStartup">Type where the main assembly is located.</typeparam>
         public static IServiceCollection AddApiResponseHeaders<TStartup>(this IServiceCollection services)
         {
             services.AddSingleton<IMetadataResolver, MetadataResolver<TStartup>>();

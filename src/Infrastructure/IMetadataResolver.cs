@@ -2,8 +2,9 @@
 {
     public interface IMetadataResolver
     {
-        Metadata Get();
+        /// <summary>
+        /// Gets the <see cref="ApiMetadata"/>.
+        /// </summary>
+        ApiMetadata GetMetadata();
     }
-
-
 }

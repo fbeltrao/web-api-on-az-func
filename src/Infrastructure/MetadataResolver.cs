@@ -2,17 +2,15 @@
 {
     public class MetadataResolver<T> : IMetadataResolver
     {
-        private readonly Metadata _metadata;
+        private readonly ApiMetadata _metadata;
 
         public MetadataResolver()
         {
             var assembly = typeof(T).Assembly;
             var asmName = assembly.GetName();
-            _metadata = new Metadata(asmName.Name, asmName.Version.ToString());
+            _metadata = new ApiMetadata(asmName.Name, asmName.Version.ToString());
         }
 
-        public Metadata Get() => _metadata;
+        public ApiMetadata GetMetadata() => _metadata;
     }
-
-
 }

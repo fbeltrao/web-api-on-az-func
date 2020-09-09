@@ -1,16 +1,14 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Extensions.Logging;
-using Infrastructure;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Threading;
-
 namespace OrdersApi
 {
+    using System;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.Extensions.Logging;
+    using Infrastructure;
+    using System.Threading;
+
     public class OrdersController : FunctionControllerBase
     {
         private readonly ICustomerService _customerService;

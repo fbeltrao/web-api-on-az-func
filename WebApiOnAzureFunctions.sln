@@ -7,7 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomersApi", "src\CustomersApi\CustomersApi.csproj", "{44329A4A-6F1A-49EE-A1B0-B294C416E44A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersApi", "src\OrdersApi\OrdersApi.csproj", "{3673EDF2-FFFE-4E1F-8333-914B400D724B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersApi", "src\OrdersApi\OrdersApi.csproj", "{3673EDF2-FFFE-4E1F-8333-914B400D724B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17E98A95-5E5A-469C-9D43-3367444E4A31}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		stylecop.ruleset = stylecop.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

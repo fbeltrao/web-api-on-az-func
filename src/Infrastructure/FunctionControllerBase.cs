@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-
-namespace Infrastructure
+﻿namespace Infrastructure
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+
     public class FunctionControllerBase
     {
-        const string DefaultNotFoundErrorMessage = "Not found";
+        private const string DefaultNotFoundErrorMessage = "Not found";
 
         protected ILogger Logger { get; private set; }
 
@@ -42,7 +42,14 @@ namespace Infrastructure
             return new NotFoundObjectResult(response);
         }
 
+        /// <summary>
+        /// Returns an <see cref="OkObjectResult"/>.
+        /// </summary>
         protected OkObjectResult OK(object value) => new OkObjectResult(value);
+
+        /// <summary>
+        /// Returns a <see cref="CreatedResult"/>.
+        /// </summary>
         protected CreatedResult Created(string location, object value) => new CreatedResult(location, value);
 
         /// <summary>
@@ -74,14 +81,19 @@ namespace Infrastructure
         /// Returns a <see cref="ApiErrorResponse"/> containing the validation error messages.
         /// Status code is <see cref="HttpStatusCode.BadRequest"/>.
         /// </summary>
-        protected IActionResult ValidationFailed(ApiValidationResult validationResult) => ValidationFailed(validationResult.ValidationResults);
-
+        protected IActionResult ValidationFailed(ApiValidationResult validationResult)
+        {
+            _ = validationResult ?? throw new ArgumentNullException(nameof(validationResult));
+            return ValidationFailed(validationResult.ValidationResults);
+        }
 
         /// <summary>
         /// Validates an object using <see cref="Validator"/>.
         /// </summary>
         protected ApiValidationResult Validate(object target)
         {
+            _ = target ?? throw new ArgumentNullException(nameof(target));
+
             var validationResults = new List<ValidationResult>();
             if (!Validator.TryValidateObject(target, new ValidationContext(target), validationResults, validateAllProperties: true))
             {
@@ -143,7 +155,7 @@ namespace Infrastructure
         protected virtual bool TryHandleError(Exception ex, out IActionResult response)
         {
             // Let fatal exception go through
-            if (IsFatal(ex))
+            if (ex != null && IsFatal(ex))
             {
                 response = null;
                 return false;
@@ -179,12 +191,13 @@ namespace Infrastructure
                 }
             }
 
-
             return false;
         }
 
         protected IActionResult Run(Func<IActionResult> fn)
         {
+            _ = fn ?? throw new ArgumentNullException(nameof(fn));
+
             try
             {
                 return fn();
@@ -192,7 +205,9 @@ namespace Infrastructure
             catch (Exception ex)
             {
                 if (TryHandleError(ex, out var errorResponse))
+                {
                     return errorResponse;
+                }
 
                 throw;
             }
@@ -200,19 +215,21 @@ namespace Infrastructure
 
         protected async Task<IActionResult> RunAsync(Func<Task<IActionResult>> fn)
         {
+            _ = fn ?? throw new ArgumentNullException(nameof(fn));
+
             try
             {
-                return await fn();
+                return await fn().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 if (TryHandleError(ex, out var errorResponse))
+                {
                     return errorResponse;
+                }
 
                 throw;
             }
         }
     }
-
-
 }

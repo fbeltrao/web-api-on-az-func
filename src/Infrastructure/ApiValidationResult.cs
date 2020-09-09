@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace Infrastructure
+﻿namespace Infrastructure
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     /// <summary>
-    /// Represents the result of an object validation
+    /// Represents the result of an object validation.
     /// </summary>
     public class ApiValidationResult
     {
