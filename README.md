@@ -44,7 +44,7 @@ Error response format:
 {
     "errorCode": "error-code",
     "error": "error-message-if-single-error",
-    "errorMessages": [ "error-1", "error-2" ]
+    "errors": [ "error-1", "error-2" ]
 }
 ```
 
