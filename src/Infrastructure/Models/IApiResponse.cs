@@ -1,4 +1,6 @@
 ﻿namespace Infrastructure
 {
-    public interface IApiResponse { }
+    public interface IApiResponse
+    {
+    }
 }

@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.WebJobs.Host;
-using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Infrastructure
+﻿namespace Infrastructure
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Azure.WebJobs.Host;
 
 #pragma warning disable CS0618 // Type or member is obsolete: In preview
     public class ApiFunctionInvocationFilter : IFunctionInvocationFilter
@@ -39,7 +38,7 @@ namespace Infrastructure
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext != null)
             {
-                var metadata = _metadataResolver.Get();
+                var metadata = _metadataResolver.GetMetadata();
                 httpContext.Response.Headers.Add(ApiVersionResponseHeader, metadata.Version);
                 httpContext.Response.Headers.Add(ApiNameResponseHeader, metadata.Component);
                 var correlationId = Activity.Current?.RootId;
@@ -52,6 +51,4 @@ namespace Infrastructure
             return Task.CompletedTask;
         }
     }
-
-
 }

@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace OrdersApi
+﻿namespace OrdersApi
 {
+    using Newtonsoft.Json;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     internal class CustomerService : ICustomerService
     {
         private readonly HttpClient _httpClient;

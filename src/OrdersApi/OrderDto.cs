@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OrdersApi
+﻿namespace OrdersApi
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class OrderDto
     {
         [Required]

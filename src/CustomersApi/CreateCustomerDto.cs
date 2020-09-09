@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CustomersApi
+﻿namespace CustomersApi
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class CreateCustomerDto
     {
         [Required(ErrorMessage = "Name is required")]
