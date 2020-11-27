@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
@@ -165,33 +166,32 @@
             return true;
         }
 
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1013:ClosingBracesMustBeSpacedCorrectly",
+            Justification = "Rule is incompatible with pattern matching in switch cases.")]
         private bool IsFatal(Exception ex)
         {
-            if (ex is StackOverflowException ||
-                ex is OutOfMemoryException)
+            re: switch (ex)
             {
-                return true;
-            }
-
-            if (ex is AggregateException aggregateException)
-            {
-                foreach (var childException in aggregateException.InnerExceptions)
-                {
-                    if (IsFatal(childException))
+                case OutOfMemoryException _:
+                case StackOverflowException _:
+                    return true;
+                case AggregateException { InnerException: { }, // avoids allocation if collection is empty
+                                          InnerExceptions: var iexs }:
+                    for (var i = 0; i < iexs.Count; i++)
                     {
-                        return true;
+                        if (IsFatal(iexs[i]))
+                            return true;
                     }
-                }
-            }
-            else
-            {
-                if (ex.InnerException != null)
-                {
-                    return IsFatal(ex.InnerException);
-                }
-            }
 
-            return false;
+                    return false;
+                case { InnerException: { } iex }:
+                    ex = iex;
+                    goto re; // simpler and as effective as tail call recursion
+                default:
+                    return false;
+            }
         }
 
         protected IActionResult Run(Func<IActionResult> fn)
