@@ -154,8 +154,7 @@
         /// </returns>
         protected virtual bool TryHandleError(Exception ex, out IActionResult response)
         {
-            // Let fatal exception go through
-            if (ex != null && IsFatal(ex))
+            if (ex == null)
             {
                 response = null;
                 return false;
@@ -202,7 +201,7 @@
             {
                 return fn();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!IsFatal(ex))
             {
                 if (TryHandleError(ex, out var errorResponse))
                 {
