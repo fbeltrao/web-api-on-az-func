@@ -167,8 +167,7 @@
 
         private bool IsFatal(Exception ex)
         {
-            if (ex is StackOverflowException ||
-                ex is OutOfMemoryException)
+            if (ex is OutOfMemoryException)
             {
                 return true;
             }
