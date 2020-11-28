@@ -175,7 +175,6 @@
             re: switch (ex)
             {
                 case OutOfMemoryException _:
-                case StackOverflowException _:
                     return true;
                 case AggregateException { InnerException: { }, // avoids allocation if collection is empty
                                           InnerExceptions: var iexs }:
