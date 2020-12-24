@@ -220,7 +220,7 @@
             {
                 return await fn().ConfigureAwait(false);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!IsFatal(ex))
             {
                 if (TryHandleError(ex, out var errorResponse))
                 {
